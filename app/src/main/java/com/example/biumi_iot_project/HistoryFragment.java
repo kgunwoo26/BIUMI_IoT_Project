@@ -8,13 +8,14 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.biumi_iot_project.databinding.FragmentHistoryBinding;
 import com.example.biumi_iot_project.databinding.FragmentSecondBinding;
 
 import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
-    private FragmentSecondBinding binding;
+    private FragmentHistoryBinding binding;
     ArrayList<My_History> My_history;
     HistoryViewAdapter adapter;
 
@@ -22,7 +23,7 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        binding = FragmentSecondBinding.inflate(inflater, container, false);
+        binding = FragmentHistoryBinding.inflate(inflater, container, false);
 
         ListView history = binding.history;
 
