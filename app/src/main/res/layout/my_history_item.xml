@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:orientation="vertical"
@@ -13,18 +13,27 @@
             android:id="@+id/alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
             android:hint="0분전 알림"/>
         <TextView
             android:id="@+id/building"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
             android:hint="__관"/>
+        <TextView
+            android:id="@+id/floor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="_F"/>
         <TextView
             android:id="@+id/history_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
             android:hint="00:00 완료"/>
-    </LinearLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="100dp"
