@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".HomeFragment"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/building_list"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:layout_centerHorizontal="true"
+        android:spinnerMode="dropdown"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="#ffffff"
+        style="@style/SpinnerItem.DropDownItem"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/trash"
+        android:layout_margin="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/trash"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

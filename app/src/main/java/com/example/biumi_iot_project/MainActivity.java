@@ -1,13 +1,14 @@
 package com.example.biumi_iot_project;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,13 +22,16 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private HomeFragment frag1;
+    private HistoryFragment frag2;
+    //private Frag3 frag3;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.example.biumi_iot_project.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -36,6 +40,27 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavi);
+
+        bottomNavigationView.setOnItemReselectedListener(menuItem -> {
+            switch (menuItem.getItemId())
+            {
+                case R.id.action_home:
+                    setFrag(0);
+                    break;
+                case R.id.action_history:
+                    setFrag(1);
+                    break;
+//                    case R.id.action_setting:
+//                        setFrag(2);
+//                        break;
+            }
+        });
+
+        frag1=new HomeFragment();
+        frag2=new HistoryFragment();
+        //frag3=new Frag3();
+        setFrag(0);
     }
 
     @Override
@@ -65,5 +90,29 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void setFrag(int n) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        switch (n)
+        {
+            case 0:
+                ft.replace(R.id.content_main,frag1);
+                ft.commit();
+                break;
+
+            case 1:
+                ft.replace(R.id.content_main,frag2);
+                ft.commit();
+                break;
+
+//            case 2:
+//                ft.replace(R.id.content_main,frag3);
+//                ft.commit();
+//                break;
+
+
+        }
     }
 }

@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-public class MyDBHelper extends SQLiteOpenHelper {
+public class MyHistoryDBHelper extends SQLiteOpenHelper {
     final static String TAG = "SQLiteDBTest";
 
-    public MyDBHelper(Context context) {
+    public MyHistoryDBHelper(Context context) {
         super(context, UserContract.DB_NAME, null, UserContract.DATABASE_VERSION);
     }
 

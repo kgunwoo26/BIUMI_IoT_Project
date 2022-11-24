@@ -1,11 +1,8 @@
 package com.example.biumi_iot_project;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +18,13 @@ public class HistoryViewAdapter extends BaseAdapter {
     private final Context mContext;
     private final int mResource;
     private final ArrayList<My_History> my_history;
-    private final Activity mActivity;
-    private int check = 0;
-    private MyDBHelper myDBHelper;
+    private MyHistoryDBHelper myDBHelper;
     LocalTime now = LocalTime.now();
 
-    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> dates, Activity activity) {
+    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> dates) {
         mContext = context;
         mResource = Resource;
         my_history = dates;
-        mActivity = activity;
     }
 
     @Override
@@ -48,6 +42,7 @@ public class HistoryViewAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -55,8 +50,7 @@ public class HistoryViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(mResource, parent, false);
         }
 
-        myDBHelper = new MyDBHelper(parent.getContext());
-        Cursor cursor = myDBHelper.getAllUsersByMethod();
+        myDBHelper = new MyHistoryDBHelper(parent.getContext());
 
         TextView tv_alarm = convertView.findViewById(R.id.alarm);
         TextView tv_history = convertView.findViewById(R.id.history_text);
@@ -68,43 +62,40 @@ public class HistoryViewAdapter extends BaseAdapter {
         tv_building.setText(my_history.get(position).building + "관");
         tv_floor.setText(my_history.get(position).floor + "F");
 
-        Button.OnClickListener onClickListener = new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (my_history.get(position).h_case) {
-                    case 2:
-                        int hour = now.getHour();
-                        int minute = now.getMinute();
-                        tv_history.setText(hour + ":" + minute + "예약");
-                        my_history.get(position).setHistory_h(hour);
-                        my_history.get(position).setHistory_m(minute);
-                        my_history.get(position).setH_case(3);
-                        btn_history.setText("예약됨");
+        Button.OnClickListener onClickListener = view -> {
+            switch (my_history.get(position).h_case) {
+                case 2:
+                    int hour = now.getHour();
+                    int minute = now.getMinute();
+                    tv_history.setText(hour + ":" + minute + "예약");
+                    my_history.get(position).setHistory_h(hour);
+                    my_history.get(position).setHistory_m(minute);
+                    my_history.get(position).setH_case(3);
+                    btn_history.setText("예약됨");
 
-                        myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
-                                my_history.get(position).building,String.valueOf(my_history.get(position).floor));
+                    myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
+                            my_history.get(position).building,String.valueOf(my_history.get(position).floor));
 
-                        myDBHelper.insert(String.valueOf(my_history.get(position).alarm),String.valueOf(hour),
-                                String.valueOf(minute),my_history.get(position).building,
-                                String.valueOf(my_history.get(position).floor),"3");
+                    myDBHelper.insert(String.valueOf(my_history.get(position).alarm),String.valueOf(hour),
+                            String.valueOf(minute),my_history.get(position).building,
+                            String.valueOf(my_history.get(position).floor),"3");
 
-                        btn_history.setBackgroundResource(R.drawable.btn_reserved);
-                        break;
-                    case 3:
-                        tv_history.setText("- - - - - - -");
-                        my_history.get(position).setH_case(2);
-                        btn_history.setText("미완료");
+                    btn_history.setBackgroundResource(R.drawable.btn_reserved);
+                    break;
+                case 3:
+                    tv_history.setText("- - - - - - -");
+                    my_history.get(position).setH_case(2);
+                    btn_history.setText("미완료");
 
-                        myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
-                                my_history.get(position).building,String.valueOf(my_history.get(position).floor));
+                    myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
+                            my_history.get(position).building,String.valueOf(my_history.get(position).floor));
 
-                        myDBHelper.insert(String.valueOf(my_history.get(position).alarm),"0", "0",
-                                my_history.get(position).building,
-                                String.valueOf(my_history.get(position).floor),"2");
+                    myDBHelper.insert(String.valueOf(my_history.get(position).alarm),"0", "0",
+                            my_history.get(position).building,
+                            String.valueOf(my_history.get(position).floor),"2");
 
-                        btn_history.setBackgroundResource(R.drawable.btn_noncomplete);
-                        break;
-                }
+                    btn_history.setBackgroundResource(R.drawable.btn_noncomplete);
+                    break;
             }
         };
 
@@ -120,12 +111,14 @@ public class HistoryViewAdapter extends BaseAdapter {
                 tv_history.setText("- - - - - - -");
                 btn_history.setText("미완료");
                 btn_history.setOnClickListener(onClickListener);
+                btn_history.setTextColor(Color.parseColor("#ffffff"));
                 btn_history.setBackgroundResource(R.drawable.btn_noncomplete);
                 break;
             case 3:
                 tv_history.setText(my_history.get(position).history_h + ":" + my_history.get(position).history_m + "예약");
                 btn_history.setText("예약됨");
                 btn_history.setOnClickListener(onClickListener);
+                btn_history.setTextColor(Color.parseColor("#ffffff"));
                 btn_history.setBackgroundResource(R.drawable.btn_reserved);
                 break;
         }
