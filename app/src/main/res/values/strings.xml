@@ -18,4 +18,13 @@
         <item>탐구관</item>
         <item>연구관</item>
     </string-array>
+
+    <string-array name="floor_list">
+        <item>1F</item>
+        <item>2F</item>
+        <item>3F</item>
+        <item>4F</item>
+        <item>5F</item>
+        <item>6F</item>
+    </string-array>
 </resources>

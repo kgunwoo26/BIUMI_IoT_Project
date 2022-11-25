@@ -25,14 +25,17 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        Spinner spinner = (Spinner) binding.buildingList;
-// Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+        Spinner building_spinner = (Spinner) binding.buildingList;
+        ArrayAdapter<CharSequence> buiding_adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.building_list, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        buiding_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        building_spinner.setAdapter(buiding_adapter);
+
+        Spinner floor_spinner = (Spinner) binding.floorList;
+        ArrayAdapter<CharSequence> floor_adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.floor_list, android.R.layout.simple_spinner_item);
+        floor_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        floor_spinner.setAdapter(floor_adapter);
 
         ImageView trash = binding.trash;
 

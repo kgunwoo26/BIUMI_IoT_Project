@@ -43,17 +43,16 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavi);
 
         bottomNavigationView.setOnItemReselectedListener(menuItem -> {
-            switch (menuItem.getItemId())
-            {
+            switch (menuItem.getItemId()) {
                 case R.id.action_home:
                     setFrag(0);
                     break;
                 case R.id.action_history:
                     setFrag(1);
                     break;
-//                    case R.id.action_setting:
-//                        setFrag(2);
-//                        break;
+                case R.id.action_setting:
+                    showDialog9();
+                    break;
             }
         });
 
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    private void setFrag(int n) {
+    public void setFrag(int n) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         switch (n)
@@ -115,4 +114,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    public void showDialog9()
+    {
+        Alarm_Dialog oDialog = new Alarm_Dialog(this);
+        oDialog.setCancelable(false);
+        oDialog.show();
+    }
 }
+
