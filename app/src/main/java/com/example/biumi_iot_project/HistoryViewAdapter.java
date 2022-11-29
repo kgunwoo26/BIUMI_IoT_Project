@@ -49,6 +49,8 @@ public class HistoryViewAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(mResource, parent, false);
         }
+        int hour = now.getHour();
+        int minute = now.getMinute();
 
         myDBHelper = new MyHistoryDBHelper(parent.getContext());
 
@@ -58,25 +60,31 @@ public class HistoryViewAdapter extends BaseAdapter {
         TextView tv_floor = convertView.findViewById(R.id.floor);
         Button btn_history = convertView.findViewById(R.id.history_btn);
 
-        tv_alarm.setText(my_history.get(position).alarm + "분전 알림");
-        tv_building.setText(my_history.get(position).building + "관");
+        tv_alarm.setText(
+                ((hour - my_history.get(position).alarm_h) * 60 +
+                        (minute - my_history.get(position).alarm_m)) + "분전 알림");
+        tv_building.setText(my_history.get(position).building);
         tv_floor.setText(my_history.get(position).floor + "F");
 
         Button.OnClickListener onClickListener = view -> {
             switch (my_history.get(position).h_case) {
                 case 2:
-                    int hour = now.getHour();
-                    int minute = now.getMinute();
                     tv_history.setText(hour + ":" + minute + "예약");
                     my_history.get(position).setHistory_h(hour);
                     my_history.get(position).setHistory_m(minute);
                     my_history.get(position).setH_case(3);
                     btn_history.setText("예약됨");
 
-                    myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
-                            my_history.get(position).building,String.valueOf(my_history.get(position).floor));
+                    myDBHelper.delete(
+                            String.valueOf(my_history.get(position).alarm_h),
+                            String.valueOf(my_history.get(position).alarm_m),
+                            my_history.get(position).building,
+                            String.valueOf(my_history.get(position).floor));
 
-                    myDBHelper.insert(String.valueOf(my_history.get(position).alarm),String.valueOf(hour),
+                    myDBHelper.insert(
+                            String.valueOf(my_history.get(position).alarm_h),
+                            String.valueOf(my_history.get(position).alarm_m),
+                            String.valueOf(hour),
                             String.valueOf(minute),my_history.get(position).building,
                             String.valueOf(my_history.get(position).floor),"3");
 
@@ -87,10 +95,16 @@ public class HistoryViewAdapter extends BaseAdapter {
                     my_history.get(position).setH_case(2);
                     btn_history.setText("미완료");
 
-                    myDBHelper.delete(String.valueOf(my_history.get(position).alarm),
-                            my_history.get(position).building,String.valueOf(my_history.get(position).floor));
+                    myDBHelper.delete(
+                            String.valueOf(my_history.get(position).alarm_h),
+                            String.valueOf(my_history.get(position).alarm_m),
+                            my_history.get(position).building,
+                            String.valueOf(my_history.get(position).floor));
 
-                    myDBHelper.insert(String.valueOf(my_history.get(position).alarm),"0", "0",
+                    myDBHelper.insert(
+                            String.valueOf(my_history.get(position).alarm_h),
+                            String.valueOf(my_history.get(position).alarm_m)
+                            ,"0", "0",
                             my_history.get(position).building,
                             String.valueOf(my_history.get(position).floor),"2");
 

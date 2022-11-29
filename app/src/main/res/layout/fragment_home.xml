@@ -17,7 +17,7 @@
         android:background="@drawable/spinner_background"
         android:popupBackground="#ffffff"
         style="@style/SpinnerItem.DropDownItem"
-        android:layout_width="70dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"/>
 
     <Spinner
@@ -29,7 +29,7 @@
         android:background="@drawable/spinner_background"
         android:popupBackground="#ffffff"
         style="@style/SpinnerItem.DropDownItem"
-        android:layout_width="70dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"/>
 
     <ImageView
@@ -42,9 +42,9 @@
         android:src="@drawable/trash"
         android:layout_gravity="center"/>
     <TextView
+        android:id="@+id/percent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="60%"
         android:textColor="@color/black"
         android:gravity="center"
         android:textSize="30dp"/>

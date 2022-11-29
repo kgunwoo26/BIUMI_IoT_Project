@@ -11,12 +11,8 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string-array name="building_list">
-        <item>상상관</item>
-        <item>공학관</item>
-        <item>창의관</item>
-        <item>인성관</item>
-        <item>탐구관</item>
-        <item>연구관</item>
+        <item>공학관 A동</item>
+        <item>공학관 B동</item>
     </string-array>
 
     <string-array name="floor_list">
@@ -24,7 +20,5 @@
         <item>2F</item>
         <item>3F</item>
         <item>4F</item>
-        <item>5F</item>
-        <item>6F</item>
     </string-array>
 </resources>

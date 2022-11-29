@@ -29,10 +29,11 @@ public class MyHistoryDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insert(String alarm, String history_h, String history_m, String building, String floor, String h_case) {
+    public void insert(String alarm_h, String alarm_m, String history_h, String history_m, String building, String floor, String h_case) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(UserContract.Users.KEY_ALARM, alarm);
+        values.put(UserContract.Users.KEY_ALARM_H, alarm_h);
+        values.put(UserContract.Users.KEY_ALARM_M, alarm_m);
         values.put(UserContract.Users.KEY_HISTORY_H, history_h);
         values.put(UserContract.Users.KEY_HISTORY_M, history_m);
         values.put(UserContract.Users.KEY_BUILDING, building);
@@ -47,11 +48,12 @@ public class MyHistoryDBHelper extends SQLiteOpenHelper {
         return db.query(UserContract.Users.TABLE_NAME, null, null, null, null, null, null);
     }
 
-    public void delete(String alarm, String building, String floor) {
+    public void delete(String alarm_h, String alarm_m, String building, String floor) {
         SQLiteDatabase db = getWritableDatabase();
 
         db.execSQL("DELETE FROM " + UserContract.Users.TABLE_NAME +
-                " WHERE " + UserContract.Users.KEY_ALARM + " = '" + alarm +
+                " WHERE " + UserContract.Users.KEY_ALARM_H + " = '" + alarm_h +
+                "' AND " + UserContract.Users.KEY_ALARM_M + " = '" + alarm_m +
                 "' AND " + UserContract.Users.KEY_BUILDING + " = '" + building +
                 "' AND " + UserContract.Users.KEY_FLOOR + " = '" + floor + "';");
     }
@@ -71,7 +73,8 @@ final class UserContract {
     /* Inner class that defines the table contents */
     public static class Users implements BaseColumns {
         public static final String TABLE_NAME = "Users";
-        public static final String KEY_ALARM = "alarm";
+        public static final String KEY_ALARM_H = "alarm_h";
+        public static final String KEY_ALARM_M = "alarm_m";
         public static final String KEY_HISTORY_H = "history_h";
         public static final String KEY_HISTORY_M = "history_m";
         public static final String KEY_BUILDING = "building";
@@ -80,7 +83,8 @@ final class UserContract {
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
-                KEY_ALARM + TEXT_TYPE + COMMA_SEP +
+                KEY_ALARM_H + TEXT_TYPE + COMMA_SEP +
+                KEY_ALARM_M + TEXT_TYPE + COMMA_SEP +
                 KEY_HISTORY_H + TEXT_TYPE + COMMA_SEP +
                 KEY_HISTORY_M + TEXT_TYPE + COMMA_SEP +
                 KEY_BUILDING + TEXT_TYPE + COMMA_SEP +

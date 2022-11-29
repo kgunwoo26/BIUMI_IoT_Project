@@ -16,18 +16,17 @@
             android:id="@+id/building"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="상상관"
             android:textSize="21dp"
             android:textStyle="bold"
             android:textColor="#1c1c1c"/>
 
         <TextView
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:id="@+id/floor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3F"
             android:textSize="21dp"
             android:textStyle="bold"
             android:textColor="#1c1c1c"/>

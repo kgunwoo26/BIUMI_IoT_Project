@@ -16,12 +16,19 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.biumi_iot_project.databinding.ActivityMainBinding;
 
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
+    private ActivityMainBinding binding;
     private HomeFragment frag1;
     private HistoryFragment frag2;
     //private Frag3 frag3;
@@ -31,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        com.example.biumi_iot_project.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -51,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                     setFrag(1);
                     break;
                 case R.id.action_setting:
-                    showDialog9();
                     break;
             }
         });
@@ -113,13 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-    }
-
-    public void showDialog9()
-    {
-        Alarm_Dialog oDialog = new Alarm_Dialog(this);
-        oDialog.setCancelable(false);
-        oDialog.show();
     }
 }
 
