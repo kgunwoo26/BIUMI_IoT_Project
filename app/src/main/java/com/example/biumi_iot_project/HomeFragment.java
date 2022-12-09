@@ -35,11 +35,13 @@ import java.util.ArrayList;
 public class HomeFragment extends Fragment {
 
     private final String name = "1";
+    private final int trash = 605;
 
     private FragmentHomeBinding binding;
     private Handler handler = new Handler();
     MyHistoryDBHelper myDBHelper;
     LocalTime now = LocalTime.now();
+    int p = 10;
 
     @Override
     public View onCreateView(
@@ -68,13 +70,22 @@ public class HomeFragment extends Fragment {
                 RequestThread thread = new RequestThread();
                 thread.start();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
+        binding.refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                p += 5;
+                p %= 100;
+                binding.percent.setText(p +"%");
+                percent(p);
+//                RequestThread thread = new RequestThread();
+//                thread.start();
+            }
+        });
         return binding.getRoot();
     }
 
@@ -83,6 +94,7 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
     class RequestThread extends Thread {
         public void run() {
             try {
@@ -137,7 +149,6 @@ public class HomeFragment extends Fragment {
                             textView.setText(res + "%");
                         }
                     }
-                    System.out.println("percent");
                     percent(res);
                 }catch (JSONException e) {
                     e.printStackTrace();
@@ -147,48 +158,26 @@ public class HomeFragment extends Fragment {
     }
 
     private void percent(int i) {
-//        쓰레기 통 현황에 따라 이미지 변경
-//        0~20 > R,drawable.trash;
-//        20~40 > R,drawable.trash_25;
-//        40~60 > R,drawable.trash_50;
-//        60~80 > R,drawable.trash_75;
-//        80~ > R,drawable.trash_100; 알림이 오는 시점 부터 쓰레기 통이 곽 참을 의미함
-
-        ImageView imageView = (ImageView) binding.trash;
+        View view = (View) binding.trash;
         String building = binding.buildingList.getSelectedItem().toString();
         String floor = binding.floorList.getSelectedItem().toString();
         myDBHelper = new MyHistoryDBHelper(getContext());
         Cursor cursor;
         int check = 0;
 
-        if(i < 20) {
-            imageView.setImageResource(R.drawable.trash);
-        }else if(i >= 20 && i < 40) {
-            imageView.setImageResource(R.drawable.trash_25);
-        }else if(i >= 40 && i < 60) {
-            imageView.setImageResource(R.drawable.trash_50);
-        }else if(i >= 60 && i < 80) {
-            imageView.setImageResource(R.drawable.trash_75);
-            cursor = myDBHelper.getAllUsersByMethod();
-            while (cursor.moveToNext()) {
-                if(cursor.getString(6).equals(building) &&
-                        cursor.getString(7).equals(floor) &&
-                        !cursor.getString(8).equals("1"))
-                    check ++;
-            }
-        }else {
-            imageView.setImageResource(R.drawable.trash_100);
-            cursor = myDBHelper.getAllUsersByMethod();
-            while (cursor.moveToNext()) {
-                if(cursor.getString(6).equals(building) &&
-                        cursor.getString(7).equals(floor) &&
-                        !cursor.getString(8).equals("1"))
-                    check ++;
-            }
-        }
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = trash / 100 * i;
+        view.setLayoutParams(params);
 
-        if(check == 0)
-            showDialog9();
+//        cursor = myDBHelper.getAllUsersByMethod();
+//        while (cursor.moveToNext()) {
+//            if(cursor.getString(6).equals(building) &&
+//                    cursor.getString(7).equals(floor) &&
+//                    !cursor.getString(8).equals("1"))
+//                check ++;
+//        }
+//        if(check == 0 && i >= 60)
+//            showDialog9();
     }
 
     public void showDialog9()
@@ -213,8 +202,8 @@ public class HomeFragment extends Fragment {
                         name,
                         alarm_h + "",
                         alarm_m + "",
-                        "0",
-                        "0",
+                        now.getHour() + "",
+                        now.getMinute() + "",
                         binding.buildingList.getSelectedItem().toString(),
                         binding.floorList.getSelectedItem().toString(),
                         "3");
@@ -222,6 +211,7 @@ public class HomeFragment extends Fragment {
                 oDialog.dismiss();
             }
         });
+
         oDialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,5 +230,4 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 }
