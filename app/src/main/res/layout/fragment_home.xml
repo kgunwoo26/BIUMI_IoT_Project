@@ -16,6 +16,7 @@
         android:spinnerMode="dropdown"
         android:background="@drawable/spinner_background"
         android:popupBackground="#ffffff"
+
         style="@style/SpinnerItem.DropDownItem"
         android:layout_width="90dp"
         android:layout_height="wrap_content"/>

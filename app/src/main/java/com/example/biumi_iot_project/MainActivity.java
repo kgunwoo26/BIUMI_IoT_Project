@@ -69,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
         setFrag(0);
 
 //        MyHistoryDBHelper myHistoryDBHelper = new MyHistoryDBHelper(this);
-//        myHistoryDBHelper.insert("1","16","20","16","25","공학관 A동","1","1");
-//        myHistoryDBHelper.insert("2","16","25","16","25","공학관 B동","1","1");
-//        myHistoryDBHelper.insert("","16","30","0","0","공학관 A동","2","2");
-//        myHistoryDBHelper.insert("","16","35","0","0","공학관 B동","2","2");
-//        myHistoryDBHelper.insert("1","16","40","16","50","공학관 A동","3","3");
-//        myHistoryDBHelper.insert("2","16","45","16","50","공학관 B동","3","3");
+//        myHistoryDBHelper.insert("1","16","20","16","25","상상관","1F","1");
+//        myHistoryDBHelper.insert("2","16","25","16","25","탐구관","1F","1");
+//        myHistoryDBHelper.insert("","16","30","0","0","상상관","2F","2");
+//        myHistoryDBHelper.insert("","16","35","0","0","탐구관","2F","2");
+//        myHistoryDBHelper.insert("1","16","40","16","50","상상 빌리지","3F","3");
+//        myHistoryDBHelper.insert("2","16","45","16","50","공학관","3F","3");
     }
 
     @Override

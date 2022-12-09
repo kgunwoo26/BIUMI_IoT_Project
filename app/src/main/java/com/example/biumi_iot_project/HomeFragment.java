@@ -46,7 +46,6 @@ public class HomeFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         Spinner building_spinner = (Spinner) binding.buildingList;
@@ -55,6 +54,13 @@ public class HomeFragment extends Fragment {
         buiding_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         building_spinner.setAdapter(buiding_adapter);
         building_spinner.setSelection(0);
+
+        Spinner floor_spinner = (Spinner) binding.floorList;
+        ArrayAdapter<CharSequence> floor_adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.floor_list, android.R.layout.simple_spinner_item);
+        floor_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        floor_spinner.setAdapter(floor_adapter);
+        floor_spinner.setSelection(0);
 
         building_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -68,16 +74,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-        Spinner floor_spinner = (Spinner) binding.floorList;
-        ArrayAdapter<CharSequence> floor_adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.floor_list, android.R.layout.simple_spinner_item);
-        floor_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        floor_spinner.setAdapter(floor_adapter);
-        floor_spinner.setSelection(0);
-
-        RequestThread thread = new RequestThread();
-        thread.start();
 
         return binding.getRoot();
     }
@@ -126,23 +122,23 @@ public class HomeFragment extends Fragment {
                 try{
                     JSONArray trashArray = new JSONArray(data);
 
+                    int res = 0;
                     for(int i=0; i<trashArray.length(); i++)
                     {
                         JSONObject trashObject = trashArray.getJSONObject(i);
                         TextView textView = (TextView) getActivity().findViewById(R.id.percent);
-                        int res;
 
                         if(position == 0 && trashObject.getString("deviceName").equals("A")) {
                             res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
                             textView.setText(res + "%");
-                            percent(res);
                         }
                         else if(position == 1 && trashObject.getString("deviceName").equals("B")) {
                             res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
                             textView.setText(res + "%");
-                            percent(res);
                         }
                     }
+                    System.out.println("percent");
+                    percent(res);
                 }catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -173,19 +169,26 @@ public class HomeFragment extends Fragment {
             imageView.setImageResource(R.drawable.trash_50);
         }else if(i >= 60 && i < 80) {
             imageView.setImageResource(R.drawable.trash_75);
-            cursor = myDBHelper.search_dialog(building, floor);
+            cursor = myDBHelper.getAllUsersByMethod();
             while (cursor.moveToNext()) {
-                if(!cursor.getString(1).equals("1"))
-                    showDialog9();
+                if(cursor.getString(6).equals(building) &&
+                        cursor.getString(7).equals(floor) &&
+                        !cursor.getString(8).equals("1"))
+                    check ++;
             }
         }else {
             imageView.setImageResource(R.drawable.trash_100);
-            cursor = myDBHelper.search_dialog(building, floor);
+            cursor = myDBHelper.getAllUsersByMethod();
             while (cursor.moveToNext()) {
-                if(!cursor.getString(1).equals("1"))
-                    showDialog9();
+                if(cursor.getString(6).equals(building) &&
+                        cursor.getString(7).equals(floor) &&
+                        !cursor.getString(8).equals("1"))
+                    check ++;
             }
         }
+
+        if(check == 0)
+            showDialog9();
     }
 
     public void showDialog9()
@@ -213,7 +216,7 @@ public class HomeFragment extends Fragment {
                         "0",
                         "0",
                         binding.buildingList.getSelectedItem().toString(),
-                        (binding.floorList.getSelectedItemPosition() + 1) + "",
+                        binding.floorList.getSelectedItem().toString(),
                         "3");
 
                 oDialog.dismiss();
@@ -227,10 +230,10 @@ public class HomeFragment extends Fragment {
                         "",
                         alarm_h+ "",
                         alarm_m + "",
-                        "",
-                        "",
+                        "0",
+                        "0",
                         binding.buildingList.getSelectedItem().toString(),
-                        (binding.floorList.getSelectedItemPosition() + 1) + "",
+                        binding.floorList.getSelectedItem().toString(),
                         "2");
 
                 oDialog.dismiss();

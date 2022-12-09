@@ -43,9 +43,8 @@ public class HistoryFragment extends Fragment {
             int alarm_m = Integer.parseInt(cursor.getString(3));
             int history_h = Integer.parseInt(cursor.getString(4));
             int history_m = Integer.parseInt(cursor.getString(5));
-            int floor = Integer.parseInt(cursor.getString(7));
             int h_case = Integer.parseInt(cursor.getString(8));
-            My_history.add(new My_History(name, alarm_h, alarm_m, history_h, history_m, cursor.getString(6), floor,h_case));
+            My_history.add(new My_History(name, alarm_h, alarm_m, history_h, history_m, cursor.getString(6), cursor.getString(7),h_case));
         }
 
         adapter = new HistoryViewAdapter(getActivity(), R.layout.my_history_item, My_history);

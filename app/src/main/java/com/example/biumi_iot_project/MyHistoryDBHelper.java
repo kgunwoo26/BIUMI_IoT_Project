@@ -44,15 +44,6 @@ public class MyHistoryDBHelper extends SQLiteOpenHelper {
         db.insert(UserContract.Users.TABLE_NAME, null, values);
     }
 
-    public Cursor search_dialog(String building, String floor) {
-        SQLiteDatabase db = getReadableDatabase();
-
-        String[] params = {UserContract.Users.KEY_BUILDING + " = '" + building +
-                            UserContract.Users.KEY_FLOOR + " = '" + floor};
-
-        return db.rawQuery(" SELECT KEY_CASE FROM Users WHERE ?", params);
-    }
-
     public Cursor getAllUsersByMethod() {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(UserContract.Users.TABLE_NAME, null, null, null, null, null, null);

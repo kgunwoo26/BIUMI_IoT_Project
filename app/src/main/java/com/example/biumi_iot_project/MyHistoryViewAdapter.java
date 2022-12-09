@@ -69,7 +69,7 @@ public class MyHistoryViewAdapter extends BaseAdapter {
                 ((hour - my_history.get(position).alarm_h) * 60 +
                         (minute - my_history.get(position).alarm_m)) + "분전 알림");
         tv_building.setText(my_history.get(position).building);
-        tv_floor.setText(my_history.get(position).floor + "F");
+        tv_floor.setText(my_history.get(position).floor);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
