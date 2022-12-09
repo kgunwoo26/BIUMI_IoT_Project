@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private HomeFragment frag1;
     private HistoryFragment frag2;
-    //private Frag3 frag3;
+    private MyHistoryFragment frag3;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -58,14 +58,23 @@ public class MainActivity extends AppCompatActivity {
                     setFrag(1);
                     break;
                 case R.id.action_setting:
+                    setFrag(2);
                     break;
             }
         });
 
         frag1=new HomeFragment();
         frag2=new HistoryFragment();
-        //frag3=new Frag3();
+        frag3=new MyHistoryFragment();
         setFrag(0);
+
+//        MyHistoryDBHelper myHistoryDBHelper = new MyHistoryDBHelper(this);
+//        myHistoryDBHelper.insert("1","16","20","16","25","공학관 A동","1","1");
+//        myHistoryDBHelper.insert("2","16","25","16","25","공학관 B동","1","1");
+//        myHistoryDBHelper.insert("","16","30","0","0","공학관 A동","2","2");
+//        myHistoryDBHelper.insert("","16","35","0","0","공학관 B동","2","2");
+//        myHistoryDBHelper.insert("1","16","40","16","50","공학관 A동","3","3");
+//        myHistoryDBHelper.insert("2","16","45","16","50","공학관 B동","3","3");
     }
 
     @Override
@@ -112,12 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 ft.commit();
                 break;
 
-//            case 2:
-//                ft.replace(R.id.content_main,frag3);
-//                ft.commit();
-//                break;
-
-
+            case 2:
+                ft.replace(R.id.content_main,frag3);
+                ft.commit();
+                break;
         }
     }
 }

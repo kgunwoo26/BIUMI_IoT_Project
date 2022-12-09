@@ -16,7 +16,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
-
     private FragmentHistoryBinding binding;
     ArrayList<My_History> My_history;
     HistoryViewAdapter adapter;
@@ -39,13 +38,14 @@ public class HistoryFragment extends Fragment {
 
         for(int i = 0; i < cursor.getCount(); i ++) {
             cursor.moveToPosition(i);
-            int alarm_h = Integer.parseInt(cursor.getString(1));
-            int alarm_m = Integer.parseInt(cursor.getString(2));
-            int history_h = Integer.parseInt(cursor.getString(3));
-            int history_m = Integer.parseInt(cursor.getString(4));
-            int floor = Integer.parseInt(cursor.getString(6));
-            int h_case = Integer.parseInt(cursor.getString(7));
-            My_history.add(new My_History(alarm_h, alarm_m, history_h, history_m, cursor.getString(5), floor,h_case));
+            String name = cursor.getString(1);
+            int alarm_h = Integer.parseInt(cursor.getString(2));
+            int alarm_m = Integer.parseInt(cursor.getString(3));
+            int history_h = Integer.parseInt(cursor.getString(4));
+            int history_m = Integer.parseInt(cursor.getString(5));
+            int floor = Integer.parseInt(cursor.getString(7));
+            int h_case = Integer.parseInt(cursor.getString(8));
+            My_history.add(new My_History(name, alarm_h, alarm_m, history_h, history_m, cursor.getString(6), floor,h_case));
         }
 
         adapter = new HistoryViewAdapter(getActivity(), R.layout.my_history_item, My_history);
@@ -53,7 +53,6 @@ public class HistoryFragment extends Fragment {
         history.setAdapter(adapter);
 
         return binding.getRoot();
-
     }
 
 

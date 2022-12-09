@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "238086098292",
+    "project_id": "biumi-3c39e",
+    "storage_bucket": "biumi-3c39e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238086098292:android:dc81da531415146a9bf021",
+        "android_client_info": {
+          "package_name": "com.example.biumi_iot_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238086098292-o6brq6jmag72eok5a36hu2eg29htl0es.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0tnsCxjfQN9FrRaT4LoNs_n4GvLk3MSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238086098292-o6brq6jmag72eok5a36hu2eg29htl0es.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

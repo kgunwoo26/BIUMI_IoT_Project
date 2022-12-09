@@ -1,5 +1,6 @@
 package com.example.biumi_iot_project;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.JsonReader;
@@ -33,9 +34,10 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
+    private final String name = "1";
+
     private FragmentHomeBinding binding;
     private Handler handler = new Handler();
-    private ArrayList<Trash> trashList = new ArrayList<>();
     MyHistoryDBHelper myDBHelper;
     LocalTime now = LocalTime.now();
 
@@ -116,6 +118,7 @@ public class HomeFragment extends Fragment {
             }
         }
     }
+
     private void println(final String data, int position) {
         handler.post(new Runnable() {
             @Override
@@ -156,6 +159,11 @@ public class HomeFragment extends Fragment {
 //        80~ > R,drawable.trash_100; 알림이 오는 시점 부터 쓰레기 통이 곽 참을 의미함
 
         ImageView imageView = (ImageView) binding.trash;
+        String building = binding.buildingList.getSelectedItem().toString();
+        String floor = binding.floorList.getSelectedItem().toString();
+        myDBHelper = new MyHistoryDBHelper(getContext());
+        Cursor cursor;
+        int check = 0;
 
         if(i < 20) {
             imageView.setImageResource(R.drawable.trash);
@@ -165,10 +173,18 @@ public class HomeFragment extends Fragment {
             imageView.setImageResource(R.drawable.trash_50);
         }else if(i >= 60 && i < 80) {
             imageView.setImageResource(R.drawable.trash_75);
-            showDialog9();
+            cursor = myDBHelper.search_dialog(building, floor);
+            while (cursor.moveToNext()) {
+                if(!cursor.getString(1).equals("1"))
+                    showDialog9();
+            }
         }else {
             imageView.setImageResource(R.drawable.trash_100);
-            showDialog9();
+            cursor = myDBHelper.search_dialog(building, floor);
+            while (cursor.moveToNext()) {
+                if(!cursor.getString(1).equals("1"))
+                    showDialog9();
+            }
         }
     }
 
@@ -183,26 +199,39 @@ public class HomeFragment extends Fragment {
         TextView textfloor = (TextView) oDialog.findViewById(R.id.floor);
         textfloor.setText(binding.floorList.getSelectedItem().toString());
 
+        int alarm_h = now.getHour();
+        int alarm_m = now.getMinute();
+
         oDialog.findViewById(R.id.reserved).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 myDBHelper = new MyHistoryDBHelper(getContext());
-
-//
-//        myDBHelper.delete(
-//                String.valueOf(now.getHour()),
-//                String.valueOf(now.getMinute()),
-//                binding.buildingList.getSelectedItem().toString(),
-//                String.valueOf(binding.floorList.getSelectedItemPosition()));
-
                 myDBHelper.insert(
-                        now.getHour() + "",
-                        now.getMinute() + "",
+                        name,
+                        alarm_h + "",
+                        alarm_m + "",
                         "0",
                         "0",
                         binding.buildingList.getSelectedItem().toString(),
                         (binding.floorList.getSelectedItemPosition() + 1) + "",
                         "3");
+
+                oDialog.dismiss();
+            }
+        });
+        oDialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myDBHelper = new MyHistoryDBHelper(getContext());
+                myDBHelper.insert(
+                        "",
+                        alarm_h+ "",
+                        alarm_m + "",
+                        "",
+                        "",
+                        binding.buildingList.getSelectedItem().toString(),
+                        (binding.floorList.getSelectedItemPosition() + 1) + "",
+                        "2");
 
                 oDialog.dismiss();
             }

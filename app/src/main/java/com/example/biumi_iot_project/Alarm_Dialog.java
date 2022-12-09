@@ -27,21 +27,5 @@ public class Alarm_Dialog extends Dialog {
         setContentView(R.layout.alarm_dialog);
 
         m_oDialog = this;
-
-        Button reserved = (Button) this.findViewById(R.id.reserved);
-        reserved.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        Button close = (Button) this.findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
     }
 }

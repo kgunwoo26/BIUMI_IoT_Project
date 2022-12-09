@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class HistoryViewAdapter extends BaseAdapter {
 
+    private final String name = "1";
+
     private final Context mContext;
     private final int mResource;
     private final ArrayList<My_History> my_history;
@@ -67,8 +69,7 @@ public class HistoryViewAdapter extends BaseAdapter {
         tv_floor.setText(my_history.get(position).floor + "F");
 
         Button.OnClickListener onClickListener = view -> {
-            switch (my_history.get(position).h_case) {
-                case 2:
+                if(my_history.get(position).h_case == 2) {
                     tv_history.setText(hour + ":" + minute + "예약");
                     my_history.get(position).setHistory_h(hour);
                     my_history.get(position).setHistory_m(minute);
@@ -76,41 +77,22 @@ public class HistoryViewAdapter extends BaseAdapter {
                     btn_history.setText("예약됨");
 
                     myDBHelper.delete(
+                            "",
                             String.valueOf(my_history.get(position).alarm_h),
                             String.valueOf(my_history.get(position).alarm_m),
                             my_history.get(position).building,
                             String.valueOf(my_history.get(position).floor));
 
                     myDBHelper.insert(
+                            name,
                             String.valueOf(my_history.get(position).alarm_h),
                             String.valueOf(my_history.get(position).alarm_m),
                             String.valueOf(hour),
-                            String.valueOf(minute),my_history.get(position).building,
-                            String.valueOf(my_history.get(position).floor),"3");
+                            String.valueOf(minute), my_history.get(position).building,
+                            String.valueOf(my_history.get(position).floor), "3");
 
                     btn_history.setBackgroundResource(R.drawable.btn_reserved);
-                    break;
-                case 3:
-                    tv_history.setText("- - - - - - -");
-                    my_history.get(position).setH_case(2);
-                    btn_history.setText("미완료");
-
-                    myDBHelper.delete(
-                            String.valueOf(my_history.get(position).alarm_h),
-                            String.valueOf(my_history.get(position).alarm_m),
-                            my_history.get(position).building,
-                            String.valueOf(my_history.get(position).floor));
-
-                    myDBHelper.insert(
-                            String.valueOf(my_history.get(position).alarm_h),
-                            String.valueOf(my_history.get(position).alarm_m)
-                            ,"0", "0",
-                            my_history.get(position).building,
-                            String.valueOf(my_history.get(position).floor),"2");
-
-                    btn_history.setBackgroundResource(R.drawable.btn_noncomplete);
-                    break;
-            }
+                }
         };
 
         switch (my_history.get(position).h_case) {
@@ -131,13 +113,11 @@ public class HistoryViewAdapter extends BaseAdapter {
             case 3:
                 tv_history.setText(my_history.get(position).history_h + ":" + my_history.get(position).history_m + "예약");
                 btn_history.setText("예약됨");
-                btn_history.setOnClickListener(onClickListener);
+                btn_history.setClickable(false);
                 btn_history.setTextColor(Color.parseColor("#ffffff"));
                 btn_history.setBackgroundResource(R.drawable.btn_reserved);
                 break;
         }
-
-
         return convertView;
     }
 }
