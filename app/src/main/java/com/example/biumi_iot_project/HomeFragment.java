@@ -44,10 +44,7 @@ public class HomeFragment extends Fragment {
     int p = 10;
 
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         Spinner building_spinner = (Spinner) binding.buildingList;
