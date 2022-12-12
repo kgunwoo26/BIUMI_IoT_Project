@@ -10,33 +10,42 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HistoryViewAdapter extends BaseAdapter {
 
-    private final String name = "1";
-
+    private final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     private final Context mContext;
+    private final ArrayList<My_History> myHistories;
     private final int mResource;
-    private final ArrayList<My_History> my_history;
-    private MyHistoryDBHelper myDBHelper;
-    LocalTime now = LocalTime.now();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private String NAME;
 
-    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> dates) {
+    LocalTime now = LocalTime.now();
+    private HashMap<String, Object> childUpdates = new HashMap<>();
+    private Map<String, Object> userValue = new HashMap<>();
+
+    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> Histories) {
         mContext = context;
         mResource = Resource;
-        my_history = dates;
+        myHistories = Histories;
     }
 
     @Override
     public int getCount() {
-        return my_history.size();
+        return myHistories.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return my_history.get(position);
+        return myHistories.get(position);
     }
 
     @Override
@@ -51,10 +60,9 @@ public class HistoryViewAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(mResource, parent, false);
         }
+        NAME = auth.getUid();
         int hour = now.getHour();
         int minute = now.getMinute();
-
-        myDBHelper = new MyHistoryDBHelper(parent.getContext());
 
         TextView tv_alarm = convertView.findViewById(R.id.alarm);
         TextView tv_history = convertView.findViewById(R.id.history_text);
@@ -63,41 +71,35 @@ public class HistoryViewAdapter extends BaseAdapter {
         Button btn_history = convertView.findViewById(R.id.history_btn);
 
         tv_alarm.setText(
-                ((hour - my_history.get(position).alarm_h) * 60 +
-                        (minute - my_history.get(position).alarm_m)) + "분전 알림");
-        tv_building.setText(my_history.get(position).building);
-        tv_floor.setText(my_history.get(position).floor);
+                ((hour - myHistories.get(position).alarm_h) * 60 +
+                        (minute - myHistories.get(position).alarm_m)) + "분전 알림");
+        tv_building.setText(myHistories.get(position).building);
+        tv_floor.setText(myHistories.get(position).floor);
 
         Button.OnClickListener onClickListener = view -> {
-                if(my_history.get(position).h_case == 2) {
+            if(myHistories.get(position).state == 2) {
                     tv_history.setText(hour + ":" + minute + "예약");
-                    my_history.get(position).setHistory_h(hour);
-                    my_history.get(position).setHistory_m(minute);
-                    my_history.get(position).setH_case(3);
+                    myHistories.get(position).setHistory_h(hour);
+                    myHistories.get(position).setHistory_m(minute);
+                    myHistories.get(position).setState(3);
                     btn_history.setText("예약됨");
 
-                    myDBHelper.delete(
-                            "",
-                            String.valueOf(my_history.get(position).alarm_h),
-                            String.valueOf(my_history.get(position).alarm_m),
-                            my_history.get(position).building,
-                            String.valueOf(my_history.get(position).floor));
+                    userValue.put("history", hour + ":" + minute);
+                    userValue.put("name", NAME);
+                    userValue.put("state", myHistories.get(position).state);
 
-                    myDBHelper.insert(
-                            name,
-                            String.valueOf(my_history.get(position).alarm_h),
-                            String.valueOf(my_history.get(position).alarm_m),
-                            String.valueOf(hour),
-                            String.valueOf(minute), my_history.get(position).building,
-                            String.valueOf(my_history.get(position).floor), "3");
-
+                    childUpdates.put("/biumi/"
+                            + myHistories.get(position).building + "-" + myHistories.get(position).floor +
+                            "/" + myHistories.get(position).alarm_h + ":" + myHistories.get(position).alarm_m
+                            , userValue);
+                    reference.updateChildren(childUpdates);
                     btn_history.setBackgroundResource(R.drawable.btn_reserved);
                 }
         };
 
-        switch (my_history.get(position).h_case) {
+        switch (myHistories.get(position).state) {
             case 1:
-                tv_history.setText(my_history.get(position).history_h + ":" + my_history.get(position).history_m + "완료");
+                tv_history.setText(myHistories.get(position).history_h + ":" + myHistories.get(position).history_m + "완료");
                 btn_history.setText("완료");
                 btn_history.setClickable(false);
                 btn_history.setTextColor(Color.parseColor("#6f6f6f"));
@@ -111,7 +113,7 @@ public class HistoryViewAdapter extends BaseAdapter {
                 btn_history.setBackgroundResource(R.drawable.btn_noncomplete);
                 break;
             case 3:
-                tv_history.setText(my_history.get(position).history_h + ":" + my_history.get(position).history_m + "예약");
+                tv_history.setText(myHistories.get(position).history_h + ":" + myHistories.get(position).history_m + "예약");
                 btn_history.setText("예약됨");
                 btn_history.setClickable(false);
                 btn_history.setTextColor(Color.parseColor("#ffffff"));

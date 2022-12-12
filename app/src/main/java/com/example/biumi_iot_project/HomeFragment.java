@@ -1,6 +1,6 @@
 package com.example.biumi_iot_project;
 
-import android.database.Cursor;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -15,6 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.biumi_iot_project.databinding.FragmentHomeBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,18 +30,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
-    private final String name = "1";
-    private final int trash = 605;
-
     private FragmentHomeBinding binding;
-    private Handler handler = new Handler();
-    MyHistoryDBHelper myDBHelper;
+    private final Handler handler = new Handler();
+    private final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
     LocalTime now = LocalTime.now();
-    int p = 10;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,16 +71,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        binding.refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                p += 5;
-                p %= 100;
-                binding.percent.setText(p +"%");
-                percent(p);
-//                RequestThread thread = new RequestThread();
-//                thread.start();
-            }
+        binding.refresh.setOnClickListener(view -> {
+            RequestThread thread = new RequestThread();
+            thread.start();
         });
         return binding.getRoot();
     }
@@ -98,14 +96,14 @@ public class HomeFragment extends Fragment {
                 urconn.setConnectTimeout(15000); // 15초
                 int resCode = urconn.getResponseCode();
                 if (resCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(urconn.getInputStream(), "UTF-8"));
-                    String line = null;
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(urconn.getInputStream(), StandardCharsets.UTF_8));
+                    String line;
                     while (true) {
                         line = reader.readLine();
                         if (line == null) {
                             break;
                         }
-                        outputBuilder.append(line + "\n");
+                        outputBuilder.append(line).append("\n");
                     }
                     reader.close();
                     urconn.disconnect();
@@ -118,57 +116,77 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void println(final String data, int position) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    JSONArray trashArray = new JSONArray(data);
+        handler.post(() -> {
+            try{
+                JSONArray trashArray = new JSONArray(data);
 
-                    int res = 0;
-                    for(int i=0; i<trashArray.length(); i++)
-                    {
-                        JSONObject trashObject = trashArray.getJSONObject(i);
-                        TextView textView = (TextView) getActivity().findViewById(R.id.percent);
+                int res = 0;
+                for(int i=0; i<trashArray.length(); i++)
+                {
+                    JSONObject trashObject = trashArray.getJSONObject(i);
+                    TextView textView = (TextView) binding.percent;
 
-                        if(position == 0 && trashObject.getString("deviceName").equals("A")) {
-                            res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
-                            textView.setText(res + "%");
-                        }
-                        else if(position == 1 && trashObject.getString("deviceName").equals("B")) {
-                            res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
-                            textView.setText(res + "%");
-                        }
+                    if(position == 0 && trashObject.getString("deviceName").equals("A")) {
+                        res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
+                        textView.setText(res + "%");
                     }
-                    percent(res);
-                }catch (JSONException e) {
-                    e.printStackTrace();
+                    else if(position == 1 && trashObject.getString("deviceName").equals("B")) {
+                        res = (int) (40 - Double.parseDouble(trashObject.getString("distance"))) * 100 / 40;
+                        textView.setText(res + "%");
+                    }
                 }
+                percent(res);
+            }catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void percent(int i) {
-        View view = (View) binding.trash;
-        String building = binding.buildingList.getSelectedItem().toString();
-        String floor = binding.floorList.getSelectedItem().toString();
-        myDBHelper = new MyHistoryDBHelper(getContext());
-        Cursor cursor;
-        int check = 0;
+        int[] check = {0};
 
+        View view = (View) binding.trash;
         ViewGroup.LayoutParams params = view.getLayoutParams();
+        int trash = 611;
         params.height = trash / 100 * i;
         view.setLayoutParams(params);
 
-//        cursor = myDBHelper.getAllUsersByMethod();
-//        while (cursor.moveToNext()) {
-//            if(cursor.getString(6).equals(building) &&
-//                    cursor.getString(7).equals(floor) &&
-//                    !cursor.getString(8).equals("1"))
-//                check ++;
-//        }
-//        if(check == 0 && i >= 60)
-//            showDialog9();
+        String building = binding.buildingList.getSelectedItem().toString();
+        String floor = binding.floorList.getSelectedItem().toString();
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = "", check_building = "", check_floor = "";
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    value = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                }
+                String[] v = value.split("\\{|,|\\s|\\}");
+                for (String l : v) {
+                    String[] m = l.split("-");
+                    String[] n = l.split("=");
+                    if(n.length == 1 && m.length == 2) {
+                        check_building = m[0];
+                        check_floor = m[1];
+                    }
+                    if(n.length == 2 && n[0].equals("state") && !n[1].equals("1")
+                            && check_building.equals(building) && check_floor.equals(floor + "=")) {
+                        check[0] += 1;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        handler.postDelayed(() -> {
+            if(check[0] == 0 && i >= 60)
+                showDialog9();
+        }, 1000);
     }
 
     public void showDialog9()
@@ -182,42 +200,69 @@ public class HomeFragment extends Fragment {
         TextView textfloor = (TextView) oDialog.findViewById(R.id.floor);
         textfloor.setText(binding.floorList.getSelectedItem().toString());
 
-        int alarm_h = now.getHour();
-        int alarm_m = now.getMinute();
+        String alarm = now.getHour() + ":" + now.getMinute();
 
-        oDialog.findViewById(R.id.reserved).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                myDBHelper = new MyHistoryDBHelper(getContext());
-                myDBHelper.insert(
-                        name,
-                        alarm_h + "",
-                        alarm_m + "",
-                        now.getHour() + "",
-                        now.getMinute() + "",
-                        binding.buildingList.getSelectedItem().toString(),
-                        binding.floorList.getSelectedItem().toString(),
-                        "3");
+        oDialog.findViewById(R.id.reserved).setOnClickListener(view -> {
+            String history = now.getHour() + ":" + now.getMinute();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String name = auth.getUid();
+            MyHistory myHistory = new MyHistory(history,name, "3");
 
-                oDialog.dismiss();
-            }
+            reference.child("biumi").child(binding.buildingList.getSelectedItem().toString() + "-"
+                    + binding.floorList.getSelectedItem().toString()).child(alarm).setValue(myHistory);
+
+            oDialog.dismiss();
         });
 
-        oDialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                myDBHelper = new MyHistoryDBHelper(getContext());
-                myDBHelper.insert(
-                        "",
-                        alarm_h+ "",
-                        alarm_m + "",
-                        "0",
-                        "0",
-                        binding.buildingList.getSelectedItem().toString(),
-                        binding.floorList.getSelectedItem().toString(),
-                        "2");
+        oDialog.findViewById(R.id.close).setOnClickListener(view -> {
+            MyHistory myHistory = new MyHistory("0:0","", "2");
 
-                oDialog.dismiss();
+            reference.child("biumi").child(binding.buildingList.getSelectedItem().toString() + "-"
+                    + binding.floorList.getSelectedItem().toString()).child(alarm).setValue(myHistory);
+
+            oDialog.dismiss();
+        });
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = "", building = "", floor = "", state = "";
+                int alarm_h = 0, alarm_m = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    value = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                }
+                String[] a = value.split("\\}");
+                for (String b : a) {
+                    String[] c = b.split("\\{|,|\\s");
+                    for(String d : c) {
+                        String[]l = d.split("=");
+                        if(l.length == 1) {
+                            String[]m = l[0].split("-");
+                            String[]n = l[0].split(":");
+                            if(m.length == 2) {
+                                building = m[0];
+                                floor = m[1];
+                            }
+                            else if(n.length == 2) {
+                                alarm_h = Integer.parseInt(n[0]);
+                                alarm_m = Integer.parseInt(n[1]);
+                            }
+                        }
+                        else if(l.length == 2) {
+                            if(l[0].equals("state"))
+                                state = l[1];
+                        }
+                    }
+                    if(building.equals(binding.buildingList.getSelectedItem().toString()) &&
+                            floor.equals(binding.floorList.getSelectedItem().toString()) &&
+                            alarm.equals(alarm_h + ":" + alarm_m) &&
+                            state.equals("3"))
+                        oDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }

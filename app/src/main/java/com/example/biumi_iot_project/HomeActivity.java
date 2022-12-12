@@ -17,12 +17,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.biumi_iot_project.databinding.ActivityHomeBinding;
 
-import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityHomeBinding binding;
     private HomeFragment frag1;
     private HistoryFragment frag2;
     private MyHistoryFragment frag3;
@@ -32,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        com.example.biumi_iot_project.databinding.ActivityHomeBinding binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -61,14 +59,6 @@ public class HomeActivity extends AppCompatActivity {
         frag2=new HistoryFragment();
         frag3=new MyHistoryFragment();
         setFrag(1);
-
-//        MyHistoryDBHelper myHistoryDBHelper = new MyHistoryDBHelper(this);
-//        myHistoryDBHelper.insert("1","16","20","16","25","상상관","1F","1");
-//        myHistoryDBHelper.insert("2","16","25","16","25","탐구관","1F","1");
-//        myHistoryDBHelper.insert("","16","30","0","0","상상관","2F","2");
-//        myHistoryDBHelper.insert("","16","35","0","0","탐구관","2F","2");
-//        myHistoryDBHelper.insert("1","16","40","16","50","상상 빌리지","3F","3");
-//        myHistoryDBHelper.insert("2","16","45","16","50","공학관","3F","3");
     }
 
     @Override

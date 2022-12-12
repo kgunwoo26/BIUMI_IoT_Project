@@ -1,7 +1,7 @@
 package com.example.biumi_iot_project;
 
-import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.biumi_iot_project.databinding.FragmentHistoryBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HistoryFragment extends Fragment {
     private FragmentHistoryBinding binding;
-    ArrayList<My_History> My_history;
-    HistoryViewAdapter adapter;
-    MyHistoryDBHelper myDBHelper;
-    LocalTime now = LocalTime.now();
+    private ArrayList<My_History> myHistories;
+    private HistoryViewAdapter adapter;
+    private final Handler handler = new Handler();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final DatabaseReference reference = database.getReference();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -28,26 +34,60 @@ public class HistoryFragment extends Fragment {
 
         ListView history = binding.history;
 
-        myDBHelper = new MyHistoryDBHelper(getContext());
+        myHistories = new ArrayList<>();
 
-        My_history = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = "", building = "", floor = "", name = "";
+                int alarm_h = 0, alarm_m = 0, history_h = 0, history_m = 0, state = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    value = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                }
+                String[] a = value.split("\\}");
+                for (String b : a) {
+                    String[] c = b.split("\\{|,|\\s");
+                    for(String d : c) {
+                        String[]l = d.split("=");
+                        if(l.length == 1) {
+                            String[]m = l[0].split("-");
+                            String[]n = l[0].split(":");
+                            if(m.length == 2) {
+                                building = m[0];
+                                floor = m[1];
+                            }
+                            else if(n.length == 2) {
+                                alarm_h = Integer.parseInt(n[0]);
+                                alarm_m = Integer.parseInt(n[1]);
+                            }
+                        }
+                        else if(l.length == 2) {
+                            if(l[0].equals("history")) {
+                                String[] h = l[1].split(":");
+                                history_h = Integer.parseInt(h[0]);
+                                history_m = Integer.parseInt(h[1]);
+                            }
+                            else if(l[0].equals("state"))
+                                state = Integer.parseInt(l[1]);
+                            else
+                                name = l[1];
+                        }
+                    }
+                    myHistories.add(new My_History(name,alarm_h,alarm_m,history_h,history_m,building,floor,state));
+                }
+            }
 
-        Cursor cursor = myDBHelper.getAllUsersByMethod();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
 
-        for(int i = 0; i < cursor.getCount(); i ++) {
-            cursor.moveToPosition(i);
-            String name = cursor.getString(1);
-            int alarm_h = Integer.parseInt(cursor.getString(2));
-            int alarm_m = Integer.parseInt(cursor.getString(3));
-            int history_h = Integer.parseInt(cursor.getString(4));
-            int history_m = Integer.parseInt(cursor.getString(5));
-            int h_case = Integer.parseInt(cursor.getString(8));
-            My_history.add(new My_History(name, alarm_h, alarm_m, history_h, history_m, cursor.getString(6), cursor.getString(7),h_case));
-        }
+        });
 
-        adapter = new HistoryViewAdapter(getActivity(), R.layout.my_history_item, My_history);
+        handler.postDelayed(() -> {
+            adapter = new HistoryViewAdapter(getActivity(), R.layout.my_history_item, myHistories);
 
-        history.setAdapter(adapter);
+            history.setAdapter(adapter);
+        }, 1000);
 
         return binding.getRoot();
     }
