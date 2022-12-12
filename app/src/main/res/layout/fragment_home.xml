@@ -36,22 +36,22 @@
         android:layout_gravity="top|right"
         tools:ignore="RtlHardcoded" />
 
+    <View
+        android:id="@+id/trash"
+        android:layout_marginBottom="203dp"
+        android:layout_width="190dp"
+        android:layout_height="222dp"
+        android:background="#777777"
+        android:layout_gravity="bottom|center"
+        />
+
     <ImageView
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/trash"
+        android:src="@drawable/trash_new"
         android:layout_gravity="center"/>
-
-    <View
-        android:id="@+id/trash"
-        android:layout_marginBottom="225dp"
-        android:layout_width="130dp"
-        android:layout_height="220dp"
-        android:background="#777777"
-        android:layout_gravity="bottom|center"
-        />
 
     <TextView
         android:id="@+id/percent"
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:layout_gravity="bottom|center"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="140dp"
         android:textSize="30sp"/>
 
 </FrameLayout>

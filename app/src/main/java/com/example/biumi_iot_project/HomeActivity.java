@@ -17,6 +17,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.biumi_iot_project.databinding.ActivityHomeBinding;
 
+import java.util.concurrent.TimeUnit;
+
 public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -42,24 +44,23 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemReselectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.action_home:
-                    setFrag(0);
-                    break;
-                case R.id.action_history:
                     setFrag(1);
                     break;
-                case R.id.action_myhistory:
+                case R.id.action_history:
                     setFrag(2);
+                    break;
+                case R.id.action_myhistory:
+                    setFrag(3);
                     break;
                 case R.id.action_logout:
                     startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                     break;
             }
         });
-
         frag1=new HomeFragment();
         frag2=new HistoryFragment();
         frag3=new MyHistoryFragment();
-        setFrag(0);
+        setFrag(1);
 
 //        MyHistoryDBHelper myHistoryDBHelper = new MyHistoryDBHelper(this);
 //        myHistoryDBHelper.insert("1","16","20","16","25","상상관","1F","1");
@@ -82,17 +83,17 @@ public class HomeActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction();
         switch (n)
         {
-            case 0:
+            case 1:
                 ft.replace(R.id.content_main,frag1);
                 ft.commit();
                 break;
 
-            case 1:
+            case 2:
                 ft.replace(R.id.content_main,frag2);
                 ft.commit();
                 break;
 
-            case 2:
+            case 3:
                 ft.replace(R.id.content_main,frag3);
                 ft.commit();
                 break;

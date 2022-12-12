@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_ThirdFragment"
+            app:destination="@id/ThirdFragmnet" />
     </fragment>
 
     <fragment
@@ -25,5 +28,22 @@
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_SecondFragmnet_to_ThirdFragment"
+            app:destination="@id/ThirdFragmnet" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ThirdFragmnet"
+        android:name="com.example.biumi_iot_project.HistoryFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_myhistory">
+
+        <action
+            android:id="@+id/action_ThirdFragmnet_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_ThirdFragmnet_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
     </fragment>
 </navigation>

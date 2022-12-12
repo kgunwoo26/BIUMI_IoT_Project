@@ -1,13 +1,11 @@
 package com.example.biumi_iot_project;
 
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // 로그인 성공시
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this, LogoActivity.class));
                         } else {
                             // 로그인 실패시
                             Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.",
