@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -39,8 +40,11 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private final Handler handler = new Handler();
     private final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-    LocalTime now = LocalTime.now();
+    private final LocalTime now = LocalTime.now();
+    private final Calendar calendar = Calendar.getInstance();
+    private final String year = String.valueOf(calendar.get(Calendar.YEAR));
+    private final String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+    private final String date = String.valueOf(calendar.get(Calendar.DATE));
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,8 +76,9 @@ public class HomeFragment extends Fragment {
         });
 
         binding.refresh.setOnClickListener(view -> {
-            RequestThread thread = new RequestThread();
-            thread.start();
+//            RequestThread thread = new RequestThread();
+//            thread.start();
+            showDialog9();
         });
         return binding.getRoot();
     }
@@ -208,8 +213,9 @@ public class HomeFragment extends Fragment {
             String name = auth.getUid();
             MyHistory myHistory = new MyHistory(history,name, "3");
 
-            reference.child("biumi").child(binding.buildingList.getSelectedItem().toString() + "-"
-                    + binding.floorList.getSelectedItem().toString()).child(alarm).setValue(myHistory);
+            reference.child("biumi").child(year + "-" + month + "-" + date)
+                    .child(binding.buildingList.getSelectedItem().toString() + "-" + binding.floorList.getSelectedItem().toString())
+                    .child(alarm).setValue(myHistory);
 
             oDialog.dismiss();
         });
@@ -217,8 +223,9 @@ public class HomeFragment extends Fragment {
         oDialog.findViewById(R.id.close).setOnClickListener(view -> {
             MyHistory myHistory = new MyHistory("0:0","", "2");
 
-            reference.child("biumi").child(binding.buildingList.getSelectedItem().toString() + "-"
-                    + binding.floorList.getSelectedItem().toString()).child(alarm).setValue(myHistory);
+            reference.child("biumi").child(year + "-" + month + "-" + date)
+                    .child(binding.buildingList.getSelectedItem().toString() + "-" + binding.floorList.getSelectedItem().toString())
+                    .child(alarm).setValue(myHistory);
 
             oDialog.dismiss();
         });
@@ -233,13 +240,18 @@ public class HomeFragment extends Fragment {
                 }
                 String[] a = value.split("\\}");
                 for (String b : a) {
+                    boolean check = !b.equals("");
                     String[] c = b.split("\\{|,|\\s");
                     for(String d : c) {
                         String[]l = d.split("=");
                         if(l.length == 1) {
                             String[]m = l[0].split("-");
                             String[]n = l[0].split(":");
-                            if(m.length == 2) {
+                            if(m.length == 3) {
+                                if(!year.equals(m[0]) || !month.equals(m[1]) || !date.equals(m[2]))
+                                    check = false;
+                            }
+                            else if(m.length == 2) {
                                 building = m[0];
                                 floor = m[1];
                             }
@@ -253,7 +265,8 @@ public class HomeFragment extends Fragment {
                                 state = l[1];
                         }
                     }
-                    if(building.equals(binding.buildingList.getSelectedItem().toString()) &&
+                    if(check &&
+                            building.equals(binding.buildingList.getSelectedItem().toString()) &&
                             floor.equals(binding.floorList.getSelectedItem().toString()) &&
                             alarm.equals(alarm_h + ":" + alarm_m) &&
                             state.equals("3"))

@@ -7,6 +7,45 @@
     tools:context=".HistoryFragment"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/year_list"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="#ffffff"
+            style="@style/SpinnerItem.DropDownItem"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"/>
+        <Spinner
+            android:id="@+id/month_list"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="#ffffff"
+            style="@style/SpinnerItem.DropDownItem"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"/>
+        <Spinner
+            android:id="@+id/date_list"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="#ffffff"
+            style="@style/SpinnerItem.DropDownItem"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:layout_marginLeft="20dp"
+            android:id="@+id/date_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색"
+            />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

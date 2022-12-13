@@ -66,6 +66,7 @@ public class SigninActivity extends AppCompatActivity {
                         mAuth.getCurrentUser();
                         Toast.makeText(binding.getRoot().getContext(), "회원가입에 성공하였습니다.",
                                 Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SigninActivity.this, LoginActivity.class));
                     } else {
                         // 회원가입 실패시 사용자에게 보여줄 메세지
                         Toast.makeText(binding.getRoot().getContext(), "회원가입에 실패했습니다.",

@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +24,23 @@ public class MyHistoryViewAdapter extends BaseAdapter {
     private final Context mContext;
     private final int mResource;
     private final ArrayList<My_History> myHistories;
-    LocalTime now = LocalTime.now();
+    private final LocalTime now = LocalTime.now();
+    private final Calendar calendar = Calendar.getInstance();
+    private final String year = String.valueOf(calendar.get(Calendar.YEAR));
+    private final String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+    private final String date = String.valueOf(calendar.get(Calendar.DATE));
     private int hour, minute;
+    private String mDate;
 
     private final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
     private HashMap<String, Object> childUpdates = new HashMap<>();
     private Map<String, Object> userValue = new HashMap<>();
 
-    public MyHistoryViewAdapter(Context context, int Resource, ArrayList<My_History> Histories) {
+    public MyHistoryViewAdapter(Context context, int Resource, ArrayList<My_History> Histories, String Date) {
         mContext = context;
         mResource = Resource;
         myHistories = Histories;
+        mDate = Date;
     }
 
     @Override
@@ -67,7 +74,11 @@ public class MyHistoryViewAdapter extends BaseAdapter {
         TextView tv_floor = convertView.findViewById(R.id.floor);
         Button btn_history = convertView.findViewById(R.id.history_btn);
 
-        tv_alarm.setText(
+        String[] date = mDate.split("-");
+
+        if(!year.equals(date[0]) || !month.equals(date[1]) || !date.equals(date[2]))
+            tv_alarm.setText(mDate);
+        else tv_alarm.setText(
                 ((hour - myHistories.get(position).alarm_h) * 60 +
                         (minute - myHistories.get(position).alarm_m)) + "분전 알림");
         tv_building.setText(myHistories.get(position).building);

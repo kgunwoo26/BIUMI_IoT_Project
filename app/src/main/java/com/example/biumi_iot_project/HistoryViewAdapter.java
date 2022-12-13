@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,16 +27,22 @@ public class HistoryViewAdapter extends BaseAdapter {
     private final ArrayList<My_History> myHistories;
     private final int mResource;
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private Calendar calendar = Calendar.getInstance();
+    private String year = String.valueOf(calendar.get(Calendar.YEAR));
+    private String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+    private String date = String.valueOf(calendar.get(Calendar.DATE));
     private String NAME;
+    private String mDate;
 
     LocalTime now = LocalTime.now();
     private HashMap<String, Object> childUpdates = new HashMap<>();
     private Map<String, Object> userValue = new HashMap<>();
 
-    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> Histories) {
+    public HistoryViewAdapter(Context context, int Resource, ArrayList<My_History> Histories, String Date) {
         mContext = context;
         mResource = Resource;
         myHistories = Histories;
+        mDate = Date;
     }
 
     @Override
@@ -70,7 +77,11 @@ public class HistoryViewAdapter extends BaseAdapter {
         TextView tv_floor = convertView.findViewById(R.id.floor);
         Button btn_history = convertView.findViewById(R.id.history_btn);
 
-        tv_alarm.setText(
+        String[] dates = mDate.split("-");
+
+        if(!year.equals(dates[0]) || !month.equals(dates[1]) || !date.equals(dates[2]))
+            tv_alarm.setText(mDate);
+        else tv_alarm.setText(
                 ((hour - myHistories.get(position).alarm_h) * 60 +
                         (minute - myHistories.get(position).alarm_m)) + "분전 알림");
         tv_building.setText(myHistories.get(position).building);
