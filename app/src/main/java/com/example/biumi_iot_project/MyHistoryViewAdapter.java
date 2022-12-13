@@ -74,9 +74,9 @@ public class MyHistoryViewAdapter extends BaseAdapter {
         TextView tv_floor = convertView.findViewById(R.id.floor);
         Button btn_history = convertView.findViewById(R.id.history_btn);
 
-        String[] date = mDate.split("-");
+        String[] dates = mDate.split("-");
 
-        if(!year.equals(date[0]) || !month.equals(date[1]) || !date.equals(date[2]))
+        if(!year.equals(dates[0]) || !month.equals(dates[1]) || !date.equals(dates[2]))
             tv_alarm.setText(mDate);
         else tv_alarm.setText(
                 ((hour - myHistories.get(position).alarm_h) * 60 +
