@@ -76,9 +76,8 @@ public class HomeFragment extends Fragment {
         });
 
         binding.refresh.setOnClickListener(view -> {
-//            RequestThread thread = new RequestThread();
-//            thread.start();
-            showDialog9();
+            RequestThread thread = new RequestThread();
+            thread.start();
         });
         return binding.getRoot();
     }
