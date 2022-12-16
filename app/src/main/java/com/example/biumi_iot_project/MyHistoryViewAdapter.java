@@ -116,9 +116,10 @@ public class MyHistoryViewAdapter extends BaseAdapter {
             userValue.put("state", myHistories.get(position).state);
 
             childUpdates.put("/biumi/"
+                            + year+"-"+month+"-"+date + "/"
                             + myHistories.get(position).building + "-" + myHistories.get(position).floor +
                             "/" + myHistories.get(position).alarm_h + ":" + myHistories.get(position).alarm_m
-                    , userValue);
+                            , userValue);
             reference.updateChildren(childUpdates);
 
             oDialog.dismiss();
@@ -131,9 +132,10 @@ public class MyHistoryViewAdapter extends BaseAdapter {
             userValue.put("state", myHistories.get(position).state);
 
             childUpdates.put("/biumi/"
+                            + year+"-"+month+"-"+date + "/"
                             + myHistories.get(position).building + "-" + myHistories.get(position).floor +
                             "/" + myHistories.get(position).alarm_h + ":" + myHistories.get(position).alarm_m
-                    , userValue);
+                            , userValue);
             reference.updateChildren(childUpdates);
 
             oDialog.dismiss();

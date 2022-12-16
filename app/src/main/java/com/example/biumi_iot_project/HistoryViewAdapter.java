@@ -100,9 +100,10 @@ public class HistoryViewAdapter extends BaseAdapter {
                     userValue.put("state", myHistories.get(position).state);
 
                     childUpdates.put("/biumi/"
-                            + myHistories.get(position).building + "-" + myHistories.get(position).floor +
-                            "/" + myHistories.get(position).alarm_h + ":" + myHistories.get(position).alarm_m
-                            , userValue);
+                                    + year+"-"+month+"-"+date + "/"
+                                    + myHistories.get(position).building + "-" + myHistories.get(position).floor +
+                                    "/" + myHistories.get(position).alarm_h + ":" + myHistories.get(position).alarm_m
+                                    , userValue);
                     reference.updateChildren(childUpdates);
                     btn_history.setBackgroundResource(R.drawable.btn_reserved);
                 }
